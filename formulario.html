@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Formularios de Justificación</title>
+  <style>
+  .popup {
+    display: none;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    font-family: Arial;
+  }
+    .popup h3 {
+      margin-top: 0;
+    }
+    .popup .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #777;
+    }
+    .popup label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .popup input[type="text"],
+    .popup select,
+    .popup textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    .popup textarea {
+      height: 60px;
+      resize: vertical;
+    }
+    .popup .btn-guardar {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: purple;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- Contenedor reutilizable de formularios (1 al 5) -->
+<div id="popupContainer" style="display:none;">
+  <!-- Clona este bloque si deseas más formularios -->
+  <!-- Formulario 1 -->
+  <div id="popupForm1" class="popup">
+    <span class="close" onclick="cerrarFormulario(1)">×</span>
+    <h3>Formulario de Justificación</h3>
+    <p><b>Fecha:</b> 2025-04-05</p>
+    <p><b>Orden:</b> 007</p>
+    <p><b>Caso:</b> 50006</p>
+    <p><b>Prestación:</b> 890201</p>
+    <p><b>Descripción:</b> Consulta externa</p>
+    <label>Motivo:</label>
+    <select>
+      <option>Diferencia en Tarifas</option>
+    </select>
+    <label>Detalle:</label>
+    <textarea placeholder="Escriba el detalle aquí..."></textarea>
+    <button class="btn-guardar">Guardar</button>
+  </div>
+
+  <!-- Formulario 2 -->
+    <div id="popupForm2" class="popup">
+    <span class="close" onclick="cerrarFormulario(2)">×</span>
+    <h3>Formulario de Justificación</h3>
+    <p><b>Fecha:</b> 2025-04-05</p>
+    <p><b>Orden:</b> 007</p>
+    <p><b>Caso:</b> 50006</p>
+    <p><b>Prestación:</b> 890201</p>
+    <p><b>Descripción:</b> Consulta externa</p>
+    <label>Motivo:</label>
+    <select>
+      <option>Diferencia en Tarifas</option>
+    </select>
+    <label>Detalle:</label>
+    <input type="text" value="Incon..." />
+    <button class="btn-guardar">Guardar</button>
+  </div>
+
+  <!-- Formulario 3 -->
+    <div id="popupForm3" class="popup">
+    <span class="close" onclick="cerrarFormulario(3)">×</span>
+    <h3>Formulario de Justificación</h3>
+    <p><b>Fecha:</b> 2025-04-05</p>
+    <p><b>Orden:</b> 007</p>
+    <p><b>Caso:</b> 50006</p>
+    <p><b>Prestación:</b> 890201</p>
+    <p><b>Descripción:</b> Consulta externa</p>
+    <label>Motivo:</label>
+    <select>
+      <option>Diferencia en Tarifas</option>
+    </select>
+    <label>Detalle:</label>
+    <input type="text" value="Incon..." />
+    <input type="text" value="Se revisan valores, se hace nota devolución." />
+    <button class="btn-guardar">Guardar</button>
+  </div>
+
+  <!-- Formulario 4 -->
+    <div id="popupForm4" class="popup">
+    <span class="close" onclick="cerrarFormulario(4)">×</span>
+    <h3>Formulario de Justificación</h3>
+    <p><b>Fecha:</b> 2025-04-05</p>
+    <p><b>Orden:</b> 007</p>
+    <p><b>Caso:</b> 50006</p>
+    <p><b>Prestación:</b> 890201</p>
+    <p><b>Descripción:</b> Consulta externa</p>
+    <label>Motivo:</label>
+    <select>
+      <option>Diferencia en Tarifas</option>
+    </select>
+    <label>Detalle:</label>
+    <input type="text" value="Incon..." />
+    <input type="text" value="Se revisan valores, se hace nota devolución." />
+    <textarea placeholder="Escriba el detalle aquí..."></textarea>
+    <button class="btn-guardar">Guardar</button>
+  </div>
+
+  <!-- Formulario 5 -->
+    <div id="popupForm5" class="popup">
+    <span class="close" onclick="cerrarFormulario(5)">×</span>
+    <h3>Formulario de Justificación</h3>
+    <p><b>Fecha:</b> 2025-04-05</p>
+    <p><b>Orden:</b> 007</p>
+    <p><b>Caso:</b> 50006</p>
+    <p><b>Prestación:</b> 890201</p>
+    <p><b>Descripción:</b> Consulta externa</p>
+    <label>Motivo:</label>
+    <select>
+      <option>Diferencia en Tarifas</option>
+    </select>
+    <label>Detalle:</label>
+    <input type="text" value="Incon..." />
+    <input type="text" value="Se revisan valores, se hace nota devolución." />
+    <input type="text" value="Ok, estoy atento a la nota devolución" />
+    <button class="btn-guardar">Guardar</button>
+  </div>
+</div>
+</div>
+<!-- Scripts -->
+<script>
+  function mostrarFormulario(n) {
+    document.querySelectorAll(".popup").forEach(f => f.style.display = "none");
+    const form = document.getElementById("popupForm" + n);
+    if (form) form.style.display = "block";
+  }
+
+  function cerrarFormulario(n) {
+    const form = document.getElementById("popupForm" + n);
+    if (form) form.style.display = "none";
+  }
+  
+window.onload = () => {
+  document.body.style.background = "transparent";
+  const hash = window.location.hash;
+  if (hash) {
+    const container = document.getElementById("popupContainer");
+    if (container) container.style.display = 'block'; // <- AÑADE ESTO
+
+    const form = document.querySelector(hash);
+    if (form) {
+      form.style.display = 'block';
+    }
+  }
+};
+
+  function ajustarAltura() {
+    try {
+      const altura = document.body.scrollHeight;
+      const iframe = parent.document.getElementById("formIframe");
+      if (iframe) {
+        iframe.style.height = altura + "px";
+      }
+    } catch (e) {
+      console.log("No se pudo ajustar altura del iframe:", e);
+    }
+  }
+
+  window.addEventListener('load', ajustarAltura);
+  window.addEventListener('resize', ajustarAltura);
+</script>
+
+</body>
+</html>

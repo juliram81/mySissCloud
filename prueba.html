@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Página Principal</title>
+  <style>
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 999;
+    }
+    .popup-frame {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 600px;
+      height: 700px;
+      transform: translate(-50%, -50%);
+      border: none;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+    }
+    .btn-close {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      font-size: 25px;
+      color: white;
+      cursor: pointer;
+      z-index: 1001;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Desde aquí abriremos el formulario en popup</h2>
+<button onclick="abrirPopupFormulario(2)">Abrir Formulario 2</button>
+
+<div class="overlay" id="overlay"></div>
+<iframe id="formFrame" class="popup-frame"></iframe>
+<span class="btn-close" onclick="cerrarPopup()">×</span>
+
+<script>
+  function abrirPopupFormulario(n) {
+    const frame = document.getElementById("formFrame");
+    frame.src = `formularios.html#form${n}`; // Ancla para ir al formulario deseado
+    frame.style.display = "block";
+    document.getElementById("overlay").style.display = "block";
+    document.querySelector(".btn-close").style.display = "block";
+  }
+
+  function cerrarPopup() {
+    document.getElementById("formFrame").style.display = "none";
+    document.getElementById("overlay").style.display = "none";
+    document.querySelector(".btn-close").style.display = "none";
+  }
+</script>
+
+</body>
+</html>

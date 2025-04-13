@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>mySiss - Validaciones Médico</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: white;
+    }
+
+    .container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 180px;
+      background-color: #eee6f8;
+      padding: 20px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .sidebar h1 {
+      color: purple;
+      font-weight: bold;
+      font-size: 50px;
+      margin-bottom: 30px;
+    }
+
+    .sidebar a {
+      display: block;
+      margin: 20px 0;
+      color: purple;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .main {
+      margin-left: 240px;
+      flex: 1;
+      background-color: white;
+      padding: 20px 40px;
+    }
+
+    .form-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    label {
+      min-width: 140px;
+    }
+
+    input, select {
+      padding: 6px;
+      width: 200px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      margin-top: 10px;
+      margin-right: 10px;
+      background-color: purple;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .table-section {
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    .col-select {
+      width: 20px;
+      position: relative;
+    }
+
+    .col-select input[type="checkbox"] {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .popup {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      width: 400px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 60px;
+      resize: none;
+    }
+
+    .popup-icon {
+      cursor: pointer;
+      font-size: 18px;
+      color: #555;
+    }
+
+    .row-rechazada {
+      background-color: #ffeeee;
+    }
+	
+	.subrayado {
+    text-decoration: underline;
+	}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <h1>mySiss</h1>
+      <a href="validacion_med.html" style="text-decoration: underline;">Validaciones</a>
+      <a href="reportes_med.html">Reportes</a>
+    </div>
+
+    <div class="main">
+      <div class="form-row">
+        <label>Fecha:</label>
+        <input type="date" />
+        <input type="date" />
+      </div>
+
+      <div class="form-row">
+        <label>Número Orden:</label>
+        <select>
+          <option selected></option>
+          <option>003</option>
+          <option>007</option>
+          <option>011</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <button class="btn" onclick="mostrarTabla()">Buscar</button>
+      </div>
+
+      <div id="tablaPreliq" class="table-section hidden">
+        <h3 id="tituloPreliq">Detalle de preliquidación</h3>
+        <table>
+          <thead>
+            <tr>
+              <th class="col-select"></th>
+              <th class="col-status">Status</th>
+              <th class="col-motivo">Respuesta</th>
+              <th>Orden</th>
+              <th>Caso</th>
+              <th>Cód. Servicio</th>
+              <th>Desc. Servicio</th>
+              <th>Fecha</th>
+              <th>Aseguradora</th>
+              <th>Especialidad</th>
+              <th>Descuentos</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body">
+            <tr>
+              <td class="col-select"><input type="checkbox" checked onchange="confirmarDesmarque(this)" /></td>
+              <td class="col-status">Pendiente</td>
+              <td class="col-motivo"></td>
+              <td>007</td>
+              <td>50006</td>
+              <td>890201</td>
+              <td>Consulta externa</td>
+              <td>2025-04-05</td>
+              <td>Nueva EPS</td>
+              <td>Medicina Interna</td>
+              <td>$0</td>
+              <td>$208.571</td>
+            </tr>
+            <tr>
+              <td class="col-select"><input type="checkbox" checked onchange="confirmarDesmarque(this)" /></td>
+              <td class="col-status">Pendiente</td>
+              <td class="col-motivo"></td>
+              <td>007</td>
+              <td>50007</td>
+              <td>890201</td>
+              <td>Consulta externa</td>
+              <td>2025-04-08</td>
+              <td>Nueva EPS</td>
+              <td>Medicina Interna</td>
+              <td>$0</td>
+              <td>$208.571</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="10"><strong>Totales</strong></td>
+              <td>$0</td>
+              <td>$417.142</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup Justificación -->
+  <div id="popupForm" class="popup hidden">
+    <h3>Formulario de Justificación</h3>
+    <div id="formularioCampos"></div>
+    <button class="btn" onclick="guardarFormulario()">Guardar</button>
+  </div>
+
+  <!-- Popup Respuesta -->
+  <div id="popupRespuesta" class="popup hidden">
+    <h3>Formulario de Respuesta</h3>
+    <div id="respuestaCampos"></div>
+    <button class="btn" onclick="cerrarPopupMotivo()">Cerrar</button>
+  </div>
+
+  <script>
+    let checkboxTemporal = null;
+    let filaTemporal = null;
+    let motivoSeleccionado = "";
+    let detalleTexto = "";
+
+    function mostrarTabla() {
+      document.getElementById("tablaPreliq").classList.remove("hidden");
+    }
+
+    function confirmarDesmarque(checkbox) {
+	 const fila = checkbox.closest("tr");
+	 
+      if (!checkbox.checked) {
+        checkboxTemporal = checkbox;
+		    filaTemporal = fila;
+
+        const celdas = filaTemporal.querySelectorAll("td");
+
+        const contenido = `
+          <p><strong>Fecha:</strong> ${celdas[7].textContent}</p>
+          <p><strong>Orden:</strong> ${celdas[3].textContent}</p>
+          <p><strong>Caso:</strong> ${celdas[4].textContent}</p>
+          <p><strong>Prestación:</strong> ${celdas[5].textContent}</p>
+          <p><strong>Descripción:</strong> ${celdas[6].textContent}</p>
+          <p><strong>Motivo:</strong>
+            <select id="motivo">
+              <option value="Diferencia en Tarifas">Diferencia en Tarifas</option>
+              <option value="Duplicidad de Registros">Duplicidad de Registros</option>
+              <option value="Deducciones no Justificadas">Deducciones no Justificadas</option>
+              <option value="Inconsistencias en Códigos">Inconsistencias en Códigos</option>
+            </select>
+          </p>
+          <p><strong>Detalle:</strong><br>
+            <textarea id="detalle" placeholder="Escriba el detalle aquí..."></textarea>
+          </p>
+        `;
+        document.getElementById("formularioCampos").innerHTML = contenido;
+        document.getElementById("popupForm").classList.remove("hidden");
+      }
+	     else {
+		// ✅ Si vuelve a marcarse el checkbox, restablecer estado
+		fila.classList.remove("row-rechazada");
+		checkbox.parentElement.style.backgroundColor = "";
+		fila.querySelector(".col-status").textContent = "Confirmado";
+  }
+    }
+
+  function guardarFormulario() {
+    const motivo = document.getElementById("motivo").value;
+    const detalle = document.getElementById("detalle").value;
+
+    if (checkboxTemporal && filaTemporal) {
+      checkboxTemporal.parentElement.style.backgroundColor = "#ffcccc";
+      filaTemporal.classList.add("row-rechazada");
+      filaTemporal.querySelector(".col-status").textContent = "En seguimiento";
+      document.getElementById("popupForm").classList.add("hidden");
+
+    // ✅ Aquí actualizamos la segunda fila a "Confirmado"
+    const tabla = document.querySelector("#tablaPreliq tbody");
+    const segundaFila = tabla.querySelectorAll("tr")[1]; // índice 1 = segunda fila
+    if (segundaFila) {
+      segundaFila.querySelector(".col-status").textContent = "Confirmado";
+    }
+
+      // Esperar 1 minutos antes de mostrar el ícono
+      setTimeout(() => {
+        filaTemporal.querySelector(".col-status").textContent = "En seguimiento";
+
+        // Crear el ícono con los datos como atributos
+        const icono = document.createElement("span");
+        icono.className = "popup-icon";
+        icono.innerHTML = "📩";
+        icono.setAttribute("data-motivo", motivo);
+        icono.setAttribute("data-detalle", detalle);
+        icono.onclick = function() {
+          verFormularioRespuesta(this);
+        };
+
+        filaTemporal.querySelector(".col-motivo").innerHTML = "";
+        filaTemporal.querySelector(".col-motivo").appendChild(icono);
+      }, 1 * 60 * 1000); // 1 minutos
+    }
+  }
+
+  function verFormularioRespuesta(icono) {
+    const motivo = icono.getAttribute("data-motivo");
+    const detalle = icono.getAttribute("data-detalle");
+
+    const campos = `
+      <p><strong>Motivo:</strong> ${motivo}</p>
+	  <p><strong>Fecha:</strong> 09/04/2025</p>  
+      <p><strong>Detalle respuesta:</strong><br>
+        <textarea readonly>Se revisa y se confirma que está correcto</textarea>
+      </p>
+    `;
+    document.getElementById("respuestaCampos").innerHTML = campos;
+    document.getElementById("popupRespuesta").classList.remove("hidden");
+  }
+
+  function cerrarPopupMotivo() {
+    document.getElementById("popupRespuesta").classList.add("hidden");
+  }
+</script>	</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Página Principal</title>
+  <style>
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: transparent;
+  z-index: 999;
+}
+
+
+
+	#formIframe {
+	  display: none;
+	  position: fixed;
+	  top: 50%;
+	  left: 50%;
+	  width: 400px;  /* tamaño más pequeño */
+	  height: 300px;
+	  transform: translate(-50%, -50%);
+	  border: none;
+	  z-index: 1000;
+	  border-radius: 15px;
+	  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+	  background-color: white;
+	}
+
+    .btn-close {
+      display: none;
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      font-size: 25px;
+      color: white;
+      cursor: pointer;
+      z-index: 1001;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Página Principal</h2>
+
+<button onclick="abrirFormulario(1)">Abrir Formulario 1</button>
+<button onclick="abrirFormulario(2)">Abrir Formulario 2</button>
+<button onclick="abrirFormulario(3)">Abrir Formulario 3</button>
+<button onclick="abrirFormulario(4)">Abrir Formulario 4</button>
+<button onclick="abrirFormulario(5)">Abrir Formulario 5</button>
+
+<div class="overlay" id="overlay"></div>
+<iframe id="formIframe"></iframe>
+<span class="btn-close" onclick="cerrarPopup()">×</span>
+
+<script>
+  function abrirFormulario(n) {
+    const iframe = document.getElementById("formIframe");
+    iframe.src = `formulario.html#popupForm${n}`;
+    iframe.style.display = "block";
+    document.getElementById("overlay").style.display = "block";
+    document.querySelector(".btn-close").style.display = "block";
+  }
+
+  function cerrarPopup() {
+    document.getElementById("formIframe").style.display = "none";
+    document.getElementById("overlay").style.display = "none";
+    document.querySelector(".btn-close").style.display = "none";
+  }
+
+</script>
+
+</body>
+</html>
