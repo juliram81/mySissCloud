@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloud Medical Fees mySiss</title>
+  <style>
+    /* Estilos anteriores se mantienen igual */
+    /* ... */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <h1>mySiss</h1>
+      <a href="honorarios.html">Preliquidación / Liquidación</a>
+      <a href="validacion_liq.html" style="text-decoration: underline;">Validaciones</a>
+      <a href="reportes_liq.html">Reportes</a>
+      <a href="login.html">Cerrar sesion</a>
+    </div>
+
+    <div class="main">
+      <div class="form-row">
+        <label>Fecha:</label>
+        <input type="date" id="fechaInicio" />
+        <input type="date" id="fechaFin" />
+      </div>
+
+      <div class="form-row">
+        <label>Número Orden:</label>
+        <select id="numeroOrden">
+          <option selected></option>
+          <option>003</option>
+          <option>007</option>
+          <option>011</option>
+          <option>014</option>
+          <option>018</option>
+          <option>022</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <button class="btn" onclick="mostrarTabla()">Buscar</button>
+      </div>
+
+      <div id="tablaPreliq" class="table-section hidden">
+        <h3 id="tituloPreliq">Detalle de preliquidación</h3>
+        <table>
+          <thead>
+            <tr>
+              <th class="col-select"></th>
+              <th class="col-status">Status</th>
+              <th class="col-motivo">Motivo</th>
+              <th>Orden</th>
+              <th>Caso</th>
+              <th>Profesional</th>
+              <th>Cód. Servicio</th>
+              <th>Desc. Servicio</th>
+              <th>Fecha</th>
+              <th>Aseguradora</th>
+              <th>Especialidad</th>
+              <th>Descuentos</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body">
+            <!-- Registro original de Yeny Palacio -->
+            <tr>
+              <td class="col-select"><input type="checkbox" checked onchange="confirmarDesmarque(this)" /></td>
+              <td class="col-status">En seguimiento</td>
+              <td class="col-motivo"><span class="email-icon" onclick="mostrarJustificacion('011', '49905', 'Yeny Palacio', '890201', 'Consulta externa', '2025-04-01', 'Deducciones no justificadas', 'Descuento no acorde')">📩</span></td>
+              <td>011</td>
+              <td>49905</td>
+              <td>Yeny Palacio</td>
+              <td>890201</td>
+              <td>Consulta externa</td>
+              <td>2025-04-01</td>
+              <td>Comfenalco</td>
+              <td>Medicina Interna</td>
+              <td>$0</td>
+              <td>$198.600</td>
+            </tr>
+            
+            <!-- Nuevo registro 1 -->
+            <tr>
+              <td class="col-select"><input type="checkbox" checked onchange="confirmarDesmarque(this)" /></td>
+              <td class="col-status">Aprobado</td>
+              <td class="col-motivo"></td>
+              <td>007</td>
+              <td>50012</td>
+              <td>Julian Ramirez</td>
+              <td>890203</td>
+              <td>Consulta especializada</td>
+              <td>2025-04-03</td>
+              <td>SURA EPS</td>
+              <td>Cardiología</td>
+              <td>$15.000</td>
+              <td>$235.000</td>
+            </tr>
+            
+            <!-- Nuevo registro 2 -->
+            <tr>
+              <td class="col-select"><input type="checkbox" checked onchange="confirmarDesmarque(this)" /></td>
+              <td class="col-status">Rechazado</td>
+              <td class="col-motivo"><span class="email-icon" onclick="mostrarJustificacion('003', '49876', 'Anthony Trejos', '890205', 'Control postoperatorio', '2025-04-02', 'Documentación incompleta', 'Falta informe médico')">📩</span></td>
+              <td>003</td>
+              <td>49876</td>
+              <td>Anthony Trejos</td>
+              <td>890205</td>
+              <td>Control postoperatorio</td>
+              <td>2025-04-02</td>
+              <td>Nueva EPS</td>
+              <td>Cirugía General</td>
+              <td>$0</td>
+              <td>$175.000</td>
+            </tr>
+            
+            <!-- Nuevo registro 3 -->
+            <tr>
+              <td class="col-select"><input type="checkbox" checked onchange="confirmarDesmarque(this)" /></td>
+              <td class="col-status">En seguimiento</td>
+              <td class="col-motivo"><span class="email-icon" onclick="mostrarJustificacion('014', '50034', 'Gustavo Mondragon', '890207', 'Procedimiento diagnóstico', '2025-04-05', 'Tarifario no aplicable', 'Procedimiento no cubierto')">📩</span></td>
+              <td>014</td>
+              <td>50034</td>
+              <td>Gustavo Mondragon</td>
+              <td>890207</td>
+              <td>Procedimiento diagnóstico</td>
+              <td>2025-04-05</td>
+              <td>Cruz Blanca</td>
+              <td>Radiología</td>
+              <td>$25.000</td>
+              <td>$320.000</td>
+            </tr>
+            
+            <!-- Nuevo registro 4 -->
+            <tr>
+              <td class="col-select"><input type="checkbox" checked onchange="confirmarDesmarque(this)" /></td>
+              <td class="col-status">Aprobado</td>
+              <td class="col-motivo"></td>
+              <td>018</td>
+              <td>50041</td>
+              <td>Maria Fernandez</td>
+              <td>890209</td>
+              <td>Terapia física</td>
+              <td>2025-04-07</td>
+              <td>Comfandi</td>
+              <td>Fisioterapia</td>
+              <td>$10.000</td>
+              <td>$150.000</td>
+            </tr>
+            
+            <!-- Nuevo registro 5 -->
+            <tr>
+              <td class="col-select"><input type="checkbox" checked onchange="confirmarDesmarque(this)" /></td>
+              <td class="col-status">Rechazado</td>
+              <td class="col-motivo"><span class="email-icon" onclick="mostrarJustificacion('022', '50056', 'Carlos Rojas', '890211', 'Cirugía ambulatoria', '2025-04-09', 'Autorización no válida', 'Falta preautorización')">📩</span></td>
+              <td>022</td>
+              <td>50056</td>
+              <td>Carlos Rojas</td>
+              <td>890211</td>
+              <td>Cirugía ambulatoria</td>
+              <td>2025-04-09</td>
+              <td>SURA EPS</td>
+              <td>Cirugía Plástica</td>
+              <td>$0</td>
+              <td>$420.000</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="11"><strong>Totales</strong></td>
+              <td>$50.000</td>
+              <td>$1,498,600</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup Justificación -->
+  <div id="popupJustificacion" class="popup-justificacion hidden">
+    <span class="popup-close" onclick="cerrarJustificacion()">×</span>
+    <div class="popup-title">Formulario de Justificación</div>
+    <div class="popup-content" id="popupJustificacionContent">
+      <!-- Contenido dinámico se insertará aquí -->
+    </div>
+  </div>
+
+  <!-- Popup Formulario de Respuesta -->
+  <div id="popupForm" class="popup hidden">
+    <span id="closePopup" class="popup-close" onclick="cerrarFormulario()">×</span>
+    <h3>Formulario de respuesta</h3>
+    <div id="formularioCampos"></div>
+    <button class="btn" onclick="guardarFormulario()">Guardar</button>
+  </div>
+
+  <script>
+    let checkboxTemporal = null;
+    let filaTemporal = null;
+    let motivoSeleccionado = "";
+    let detalleTexto = "";
+
+    function mostrarTabla() {
+      const fechaInicio = document.getElementById("fechaInicio").value;
+      const fechaFin = document.getElementById("fechaFin").value;
+      const numeroOrden = document.getElementById("numeroOrden").value;
+
+      if (!numeroOrden) {
+        alert("Por favor selecciona el número de orden.");
+        return;
+      }
+
+      document.getElementById("tablaPreliq").classList.remove("hidden");
+    }
+
+    function mostrarJustificacion(orden, caso, profesional, servicioCod, servicioDesc, fecha, motivo, detalle) {
+      const contenido = `
+        <p><strong>Fecha:</strong> ${fecha}</p>
+        <p><strong>Orden:</strong> ${orden}</p>
+        <p><strong>Caso:</strong> ${caso}</p>
+        <p><strong>Profesional:</strong> ${profesional}</p>
+        <p><strong>Prestación:</strong> ${servicioCod}</p>
+        <p><strong>Descripción:</strong> ${servicioDesc}</p>
+        <p><strong>Motivo:</strong> ${motivo}</p>
+        <p><strong>Detalle:</strong></p>
+        <input type="text" value="${detalle}" readonly style="width: 100%; padding: 5px; border: 1px solid #ccc; background: #f5f5f5;">
+      `;
+      document.getElementById("popupJustificacionContent").innerHTML = contenido;
+      document.getElementById("popupJustificacion").classList.remove("hidden");
+    }
+
+    function cerrarJustificacion() {
+      document.getElementById("popupJustificacion").classList.add("hidden");
+    }
+
+    function confirmarDesmarque(checkbox) {
+      if (!checkbox.checked) {
+        checkboxTemporal = checkbox;
+        filaTemporal = checkbox.closest("tr");
+
+        const celdas = filaTemporal.querySelectorAll("td");
+
+        const contenido = `
+          <p><strong>Fecha:</strong> ${celdas[7].textContent}</p>
+          <p><strong>Orden:</strong> ${celdas[3].textContent}</p>
+          <p><strong>Caso:</strong> ${celdas[4].textContent}</p>
+          <p><strong>Profesional:</strong> ${celdas[5].textContent}</p>
+          <p><strong>Prestación:</strong> ${celdas[6].textContent}</p>
+          <p><strong>Descripción:</strong> ${celdas[7].textContent}</p>
+          <p><strong>Objeción Médica:</strong><br>
+          <p>Incorrecto</p>
+          <p><strong>Respuesta:</strong><br>
+            <textarea id="detalle" placeholder="Escriba el detalle aquí..."></textarea>
+          </p>
+        `;
+        document.getElementById("formularioCampos").innerHTML = contenido;
+        document.getElementById("popupForm").classList.remove("hidden");
+      }
+    }
+
+    function guardarFormulario() {
+      const motivo = "Incorrecto";
+      const detalle = document.getElementById("detalle").value;
+
+      if (checkboxTemporal && filaTemporal) {
+        checkboxTemporal.parentElement.style.backgroundColor = "#ffcccc";
+        filaTemporal.classList.add("row-rechazada");
+        filaTemporal.querySelector(".col-status").textContent = "En seguimiento";
+        document.getElementById("popupForm").classList.add("hidden");
+
+        setTimeout(() => {
+          const icono = document.createElement("span");
+          icono.className = "email-icon";
+          icono.innerHTML = "📩";
+          icono.setAttribute("data-motivo", motivo);
+          icono.setAttribute("data-detalle", detalle);
+          icono.onclick = function() {
+            const celdas = filaTemporal.querySelectorAll("td");
+            mostrarJustificacion(
+              celdas[3].textContent,
+              celdas[4].textContent,
+              celdas[5].textContent,
+              celdas[6].textContent,
+              celdas[7].textContent,
+              celdas[8].textContent,
+              motivo,
+              detalle
+            );
+          };
+
+          filaTemporal.querySelector(".col-motivo").innerHTML = "";
+          filaTemporal.querySelector(".col-motivo").appendChild(icono);
+        }, 0);
+      }
+    }
+
+    function cerrarFormulario() {
+      document.getElementById("popupForm").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>

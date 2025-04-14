@@ -144,6 +144,7 @@
       }
     }
   </style>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
@@ -153,7 +154,6 @@
       <a href="reportes_med.html" style="text-decoration: underline;">Reportes</a>
 	  <a href="login.html">Cerrar sesion</a>
     </div>
-
     <div class="main">
       <div class="form-row">
         <label for="tipo-reporte">Periodo:</label>
@@ -161,8 +161,8 @@
           <option selected disabled></option>
 			<option value="enero">Enero</option>
 			<option value="#">Febrero</option>
-			<option value="#">Marzo</option>
-			<option value="#">Abril</option>
+			<option value="marzo">Marzo</option>
+			<option value="abril">Abril</option>
 			<option value="#">Mayo</option>
 			<option value="#">Junio</option>
 			<option value="#">Julio</option>
@@ -193,17 +193,24 @@
       </div>
 
       <div id="resultados"></div>
-    </div>
-  </div>
+	  <!-- 🔽 CONTENEDOR DE GRÁFICAS -->
+		<div id="graficas" style="display: flex; justify-content: center; align-items: center; gap: 30px; margin-top: 20px;">
+		  <canvas id="graficaBarras" width="320" height="255"></canvas>
+		  <canvas id="graficaTorta" width="320" height="255"></canvas>
+		</div>
+
+		</div>
+	  </div>
   <script>
     const datosSimulados = {
       enero: [
-        { Caso: 50005, Orden: "000010", "Cód. Servicio": "4000", "Desc. Servicio": "Lobotomía", "Vr. Unitario": "250000", IVA: "39915", Retenciones: "8750", Descuentos: "25000", Total: "256165" },
-        { Caso: 50005, Orden: "000010", "Cód. Servicio": "8000", "Desc. Servicio": "Biopsia lumbar", "Vr. Unitario": "50000", IVA: "7983", Retenciones: "1750", Descuentos: "5000", Total: "51233" },
-        { Caso: 50005, Orden: "000010", "Cód. Servicio": "5000", "Desc. Servicio": "Consulta Control", "Vr. Unitario": "25000", IVA: "3991", Retenciones: "875", Descuentos: "2500", Total: "25616" },
-        { Caso: 50005, Orden: "000010", "Cód. Servicio": "6000", "Desc. Servicio": "Consulta Control", "Vr. Unitario": "15000", IVA: "2394", Retenciones: "525", Descuentos: "1500", Total: "15369" },
-        { Caso: 50005, Orden: "000010", "Cód. Servicio": "7000", "Desc. Servicio": "Derivación ventricular", "Vr. Unitario": "500000", IVA: "79831", Retenciones: "17500", Descuentos: "50000", Total: "512331" }
+        { Caso: 49857, Orden: "000002", "Cód. Servicio": "207502", "Desc. Servicio": "LABERINTECTOMIA O VESTIBULOTOMIA", "Vr. Unitario": "250000", IVA: "39915", Retenciones: "8750", Descuentos: "25000", Total: "256165" },
+        { Caso: 49858, Orden: "000002", "Cód. Servicio": "212001", "Desc. Servicio": "BIOPSIA NASAL VIA TRANSNASAL", "Vr. Unitario": "50000", IVA: "7983", Retenciones: "1750", Descuentos: "5000", Total: "51233" },
+        { Caso: 49913, Orden: "000003", "Cód. Servicio": "890101", "Desc. Servicio": "CONSULTA CONTROL", "Vr. Unitario": "25000", IVA: "3991", Retenciones: "875", Descuentos: "2500", Total: "25616" },
+        { Caso: 49914, Orden: "000003", "Cód. Servicio": "890102", "Desc. Servicio": "CONSULTA CONTROL", "Vr. Unitario": "15000", IVA: "2394", Retenciones: "525", Descuentos: "1500", Total: "15369" },
+        { Caso: 49915, Orden: "000003", "Cód. Servicio": "023401", "Desc. Servicio": "DERIVACIÓN VENTRICULAR", "Vr. Unitario": "500000", IVA: "79831", Retenciones: "17500", Descuentos: "50000", Total: "512331" }
       ]
+
     };
 
     function mostrarReporte() {
@@ -217,6 +224,7 @@
       const datos = datosSimulados[mes];
       const contenedor = document.getElementById("resultados");
       contenedor.innerHTML = generarTabla(datos);
+	  generarGraficas(datos);
       document.getElementById("btn-descargar").style.display = "inline-block";
     }
 
@@ -271,9 +279,98 @@
 
     function descargarPDF() {
       cerrarPopup();
-      window.open("files/descarga_pdf_hon.pdf", "_blank");
+      window.open("files/extract_med.pdf", "_blank");
     }
-	
+	let chartTorta, chartLineas;
+
+	function generarGraficas(data) {
+	  const labels = data.map(item => item["Desc. Servicio"]);
+	  const valores = data.map(item => item["Total"]);
+
+	  const coloresPersonalizados = [
+		"#482C87", "#5E4696", "#444B9A", "#A164A6", "#AB00E0", "#651EA1"
+	  ];
+
+	  // Destruir gráficas anteriores si ya existen
+	  if (window.barraChart) window.barraChart.destroy();
+	  if (window.tortaChart) window.tortaChart.destroy();
+
+	  // Gráfica de Barras
+window.barrasChart = new Chart(document.getElementById("graficaBarras"), {
+  type: "bar",
+  data: {
+    labels,
+    datasets: [{
+      label: "Total por servicio", // este es el texto que aparece abajo (lo quitaremos)
+      data: valores,
+      backgroundColor: coloresPersonalizados,
+      borderRadius: 5
+    }]
+  },
+  options: {
+    responsive: false,
+    plugins: {
+      legend: {
+        position: "down", // 👈 mueve la leyenda a la derecha
+        labels: {
+          boxWidth: 15
+        }
+      },
+      title: {
+        display: true,
+        text: "Totales por servicio",
+        position: "top",
+        font: {
+          size: 14,
+          weight: "bold"
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          display: false // 👈 oculta los textos del eje x si no los necesitas
+        }
+      },
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+
+	  // Gráfica de Torta
+	  window.tortaChart = new Chart(document.getElementById("graficaTorta"), {
+		type: "doughnut",
+		data: {
+		  labels,
+		  datasets: [{
+			data: valores,
+			backgroundColor: coloresPersonalizados
+		  }]
+		},
+		options: {
+		  responsive: false,
+		  plugins: {
+			legend: {
+			  position: "left",
+			  labels: { boxWidth: 15 }
+			},
+			title: {
+			  display: true,
+			  text: "Distribución porcentual",
+			  position: "top",
+			  font: {
+				size: 14,
+				weight: "bold"
+			  }
+			}
+		  }
+		}
+	  });
+	}
+
+
   </script>
 </body>
 </html>

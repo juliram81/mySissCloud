@@ -153,6 +153,14 @@ td.col-select input[type="checkbox"] {
 	  .subrayado {
     text-decoration: underline;
   }
+  
+  /* Estilo para el mensaje de error */
+  .error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+    display: none;
+  }
   </style>
 </head>
 <body>
@@ -197,7 +205,7 @@ td.col-select input[type="checkbox"] {
             <select id="tipoContrato" onchange="mostrarEspecialidad(this.value)">
               <option selected disabled></option>
               <option value="grupo">Grupo Profesional</option>
-              <option value="servicio">A nombre propio</option>
+              <option value="servicio">Prestación de servicio</option>
               <option value="nomina">Nómina</option>
             </select>
           </div>
@@ -219,10 +227,10 @@ td.col-select input[type="checkbox"] {
           <label>Profesional:</label>
           <select id="profesionalSelect">
             <option selected></option>
-              <option>Palacio Yeny </option>
-              <option>Trejos Anthony </option>
-              <option>Ramirez Julian</option>
-              <option>Mondragon Gustavo</option>
+              <option>Yeny Palacio</option>
+              <option>Anthony Trejos</option>
+              <option>Julian Ramirez</option>
+              <option>Gustavo Mondragon</option>
             </select>
           </div>
 
@@ -248,6 +256,9 @@ td.col-select input[type="checkbox"] {
         <div class="form-row">
           <button class="btn" onclick="mostrarTabla('liq')">Visualizar</button>
           <button class="btn" onclick="generarAccion('liq')">Liquidar</button>
+        </div>
+        <div id="errorMessage" class="error-message">
+          Tiene posiciones pendientes, no se puede liquidar esta orden
         </div>
       </div>
 
@@ -332,23 +343,6 @@ td.col-select input[type="checkbox"] {
               <td class="col-estado">En seguimiento</td>
               <td class="col-orden">011</td>
               <td>Yeny Palacio</td>
-              <td>49905</td>
-              <td>890201</td>
-              <td>Consulta externa</td>
-              <td>2025-04-01</td>
-              <td>04:00 p.m.</td>
-              <td>Comfenalco</td>
-              <td>Medicina Interna</td>
-              <td>$150.000</td>
-              <td>$23.810</td>
-              <td>$0</td>
-              <td>$198.600</td>
-            </tr>
-            <tr>
-              <td class="col-select"><input type="checkbox" /></td>
-              <td class="col-estado">Preliquidado</td>
-              <td class="col-orden">011</td>
-              <td>Yeny Palacio</td>
               <td>50011</td>
               <td>890204</td>
               <td>Procedimiento diagnóstico</td>
@@ -361,7 +355,23 @@ td.col-select input[type="checkbox"] {
               <td>$0</td>
               <td>$405.556</td>
             </tr>
-
+            <tr>
+              <td class="col-select"><input type="checkbox" /></td>
+              <td class="col-estado">Preliquidado</td>
+              <td class="col-orden">011</td>
+              <td>Yeny Palacio</td>
+              <td>50012</td>
+              <td>890205</td>
+              <td>Control postoperatorio</td>
+              <td>2025-04-14</td>
+              <td>04:00 p.m.</td>
+              <td>SURA EPS</td>
+              <td>Cardiología</td>
+              <td>$150.000</td>
+              <td>$23.810</td>
+              <td>$0</td>
+              <td>$173.810</td>
+            </tr>
 
           </tbody>
           <tfoot>
@@ -377,17 +387,20 @@ td.col-select input[type="checkbox"] {
   const radioLiq = document.getElementById("liq");
   const seccionPre = document.getElementById("preliquidacion-section");
   const seccionLiq = document.getElementById("liquidacion-section");
+  const errorMessage = document.getElementById("errorMessage");
 
   radioPre.addEventListener("change", () => {
     seccionPre.classList.remove("hidden");
     seccionLiq.classList.add("hidden");
     document.getElementById("tablaPreliq").classList.add("hidden");
+    errorMessage.style.display = "none";
   });
 
   radioLiq.addEventListener("change", () => {
     seccionLiq.classList.remove("hidden");
     seccionPre.classList.add("hidden");
     document.getElementById("tablaPreliq").classList.add("hidden");
+    errorMessage.style.display = "none";
   });
 
   function mostrarEspecialidad(valor) {
@@ -414,41 +427,19 @@ td.col-select input[type="checkbox"] {
       colEstado.forEach(el => el.style.display = "none");
       colOrden.forEach(el => el.style.display = "none");
       colSelect.forEach(el => el.style.display = "none");
-      
-      // Filtrado por profesional en preliquidación
-      const profesionalSelect = document.getElementById("profesionalSelect");
-      const profesional = profesionalSelect.options[profesionalSelect.selectedIndex].text;
-      
-      const filas = document.querySelectorAll("#tabla-body tr");
-      filas.forEach(fila => {
-        const nombreProfesional = fila.cells[3].innerText;
-        
-        // Coincidencia flexible de nombres
-        const nombresCoinciden = 
-          profesional === "" || 
-          nombreProfesional === profesional || 
-          nombreProfesional.split(" ").reverse().join(" ") === profesional;
-        
-        if (nombresCoinciden) {
-          fila.style.display = "";
-        } else {
-          fila.style.display = "none";
-        }
-      });
-      
-      document.getElementById("tituloPreliq").innerText = profesional ? `Preliquidación para ${profesional}` : "Detalle de Preliquidación";
+      document.getElementById("tituloPreliq").innerText = "Detalle de Preliquidación";
     } else {
       colEstado.forEach(el => el.style.display = "");
       colOrden.forEach(el => el.style.display = "");
       colSelect.forEach(el => el.style.display = "");
       
-      // Filtrado por número de orden en liquidación
+      // Verificar si hay una orden específica seleccionada
       const ordenInput = document.getElementById("ordenInput").value;
-      const filas = document.querySelectorAll("#tabla-body tr");
-      
       if (ordenInput) {
         document.getElementById("tituloPreliq").innerText = `Preliquidación #${ordenInput}`;
         
+        // Mostrar solo la orden seleccionada
+        const filas = document.querySelectorAll("#tabla-body tr");
         filas.forEach(fila => {
           const numOrden = fila.querySelector(".col-orden").innerText;
           if (numOrden === ordenInput) {
@@ -459,6 +450,8 @@ td.col-select input[type="checkbox"] {
         });
       } else {
         document.getElementById("tituloPreliq").innerText = "Todas las Preliquidaciones";
+        // Mostrar todas las filas si no hay orden específica
+        const filas = document.querySelectorAll("#tabla-body tr");
         filas.forEach(fila => {
           fila.style.display = "";
         });
@@ -480,21 +473,15 @@ td.col-select input[type="checkbox"] {
       colOrden.forEach(el => el.style.display = "");
       colSelect.forEach(el => el.style.display = "none");
       
-      // Filtrado por profesional al preliquidar
+      // Obtener el profesional seleccionado
       const profesionalSelect = document.getElementById("profesionalSelect");
       const profesional = profesionalSelect.options[profesionalSelect.selectedIndex].text;
       
+      // Actualizar solo las filas del profesional seleccionado
       const filas = document.querySelectorAll("#tabla-body tr");
       filas.forEach(fila => {
         const nombreProfesional = fila.cells[3].innerText;
-        
-        // Coincidencia flexible de nombres
-        const nombresCoinciden = 
-          profesional === "" || 
-          nombreProfesional === profesional || 
-          nombreProfesional.split(" ").reverse().join(" ") === profesional;
-        
-        if (nombresCoinciden) {
+        if (nombreProfesional === profesional || profesional === "") {
           fila.style.display = "";
           fila.cells[1].innerText = "Preliquidado";
         } else {
@@ -502,14 +489,15 @@ td.col-select input[type="checkbox"] {
         }
       });
       
-      document.getElementById("tituloPreliq").innerText = profesional ? `Preliquidación para ${profesional}` : "Preliquidación General";
+      document.getElementById("tituloPreliq").innerText = profesional ? `Preliquidación para ${profesional}` : "Preliquidación";
       actualizarTotales();
 
-      // Mostrar confirmación y redirigir
-      alert("Preliquidación generada correctamente");
+      // Mostrar popup y redirigir después de un momento
+      alert("Correo enviado al Doctor, para su aprobación");
+
       setTimeout(() => {
         window.location.href = "email.html";
-      }, 2000);
+      }, 2000); // espera 2000 milisegundos (2 segundos)
 
     } else {
       // Verificar si es la orden 011 con estado "En seguimiento"
@@ -528,15 +516,17 @@ td.col-select input[type="checkbox"] {
       }
       
       if (tienePendientes) {
-        alert("Tiene posiciones pendientes, no se puede liquidar esta orden");
+        errorMessage.style.display = "block";
         return;
+      } else {
+        errorMessage.style.display = "none";
       }
       
       colEstado.forEach(el => el.style.display = "");
       colOrden.forEach(el => el.style.display = "");
       colSelect.forEach(el => el.style.display = "none");
       
-      // Actualizar estado a "Liquidado"
+      // Actualizar estado a "Liquidado" solo para la orden seleccionada
       if (ordenInput) {
         filas.forEach(fila => {
           const numOrden = fila.querySelector(".col-orden").innerText;
@@ -547,16 +537,14 @@ td.col-select input[type="checkbox"] {
             fila.style.display = "none";
           }
         });
-        document.getElementById("tituloPreliq").innerText = `Liquidación #014`;
+        document.getElementById("tituloPreliq").innerText = `Liquidación #${ordenInput}`;
       } else {
+        // Si no hay orden específica, actualizar todas
         document.querySelectorAll(".col-estado").forEach(el => el.innerText = "Liquidado");
         document.getElementById("tituloPreliq").innerText = "Liquidación General";
       }
       
       actualizarTotales();
-      
-      // Mostrar confirmación de liquidación
-      alert("Liquidación generada correctamente");
     }
   }
 
@@ -572,15 +560,17 @@ td.col-select input[type="checkbox"] {
     
     const filasVisibles = document.querySelectorAll("#tabla-body tr:not([style*='display: none'])");
     filasVisibles.forEach(fila => {
-      const unitario = parseFloat(fila.cells[11].innerText.replace(/\D/g, '')) || 0;
-      const iva = parseFloat(fila.cells[12].innerText.replace(/\D/g, '')) || 0;
-      const descuentos = parseFloat(fila.cells[13].innerText.replace(/\D/g, '')) || 0;
-      const total = parseFloat(fila.cells[14].innerText.replace(/\D/g, '')) || 0;
-      
-      totalUnitario += unitario;
-      totalIva += iva;
-      totalDescuentos += descuentos;
-      totalGeneral += total;
+      if (fila.style.display !== "none") {
+        const unitario = parseFloat(fila.cells[11].innerText.replace(/\D/g, '')) || 0;
+        const iva = parseFloat(fila.cells[12].innerText.replace(/\D/g, '')) || 0;
+        const descuentos = parseFloat(fila.cells[13].innerText.replace(/\D/g, '')) || 0;
+        const total = parseFloat(fila.cells[14].innerText.replace(/\D/g, '')) || 0;
+        
+        totalUnitario += unitario;
+        totalIva += iva;
+        totalDescuentos += descuentos;
+        totalGeneral += total;
+      }
     });
     
     // Formatear los números con separadores de miles

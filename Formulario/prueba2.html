@@ -332,23 +332,6 @@ td.col-select input[type="checkbox"] {
               <td class="col-estado">En seguimiento</td>
               <td class="col-orden">011</td>
               <td>Yeny Palacio</td>
-              <td>49905</td>
-              <td>890201</td>
-              <td>Consulta externa</td>
-              <td>2025-04-01</td>
-              <td>04:00 p.m.</td>
-              <td>Comfenalco</td>
-              <td>Medicina Interna</td>
-              <td>$150.000</td>
-              <td>$23.810</td>
-              <td>$0</td>
-              <td>$198.600</td>
-            </tr>
-            <tr>
-              <td class="col-select"><input type="checkbox" /></td>
-              <td class="col-estado">Preliquidado</td>
-              <td class="col-orden">011</td>
-              <td>Yeny Palacio</td>
               <td>50011</td>
               <td>890204</td>
               <td>Procedimiento diagnóstico</td>
@@ -361,7 +344,23 @@ td.col-select input[type="checkbox"] {
               <td>$0</td>
               <td>$405.556</td>
             </tr>
-
+            <tr>
+              <td class="col-select"><input type="checkbox" /></td>
+              <td class="col-estado">Preliquidado</td>
+              <td class="col-orden">011</td>
+              <td>Yeny Palacio</td>
+              <td>50012</td>
+              <td>890205</td>
+              <td>Control postoperatorio</td>
+              <td>2025-04-14</td>
+              <td>04:00 p.m.</td>
+              <td>SURA EPS</td>
+              <td>Cardiología</td>
+              <td>$150.000</td>
+              <td>$23.810</td>
+              <td>$0</td>
+              <td>$173.810</td>
+            </tr>
 
           </tbody>
           <tfoot>
@@ -422,14 +421,7 @@ td.col-select input[type="checkbox"] {
       const filas = document.querySelectorAll("#tabla-body tr");
       filas.forEach(fila => {
         const nombreProfesional = fila.cells[3].innerText;
-        
-        // Coincidencia flexible de nombres
-        const nombresCoinciden = 
-          profesional === "" || 
-          nombreProfesional === profesional || 
-          nombreProfesional.split(" ").reverse().join(" ") === profesional;
-        
-        if (nombresCoinciden) {
+        if (profesional === "" || nombreProfesional === profesional) {
           fila.style.display = "";
         } else {
           fila.style.display = "none";
@@ -487,14 +479,7 @@ td.col-select input[type="checkbox"] {
       const filas = document.querySelectorAll("#tabla-body tr");
       filas.forEach(fila => {
         const nombreProfesional = fila.cells[3].innerText;
-        
-        // Coincidencia flexible de nombres
-        const nombresCoinciden = 
-          profesional === "" || 
-          nombreProfesional === profesional || 
-          nombreProfesional.split(" ").reverse().join(" ") === profesional;
-        
-        if (nombresCoinciden) {
+        if (profesional === "" || nombreProfesional === profesional) {
           fila.style.display = "";
           fila.cells[1].innerText = "Preliquidado";
         } else {
@@ -505,11 +490,12 @@ td.col-select input[type="checkbox"] {
       document.getElementById("tituloPreliq").innerText = profesional ? `Preliquidación para ${profesional}` : "Preliquidación General";
       actualizarTotales();
 
-      // Mostrar confirmación y redirigir
-      alert("Preliquidación generada correctamente");
+      // Mostrar popup y redirigir después de un momento
+      alert("Correo enviado al Doctor, para su aprobación");
+
       setTimeout(() => {
         window.location.href = "email.html";
-      }, 2000);
+      }, 2000); // espera 2000 milisegundos (2 segundos)
 
     } else {
       // Verificar si es la orden 011 con estado "En seguimiento"
@@ -536,7 +522,7 @@ td.col-select input[type="checkbox"] {
       colOrden.forEach(el => el.style.display = "");
       colSelect.forEach(el => el.style.display = "none");
       
-      // Actualizar estado a "Liquidado"
+      // Actualizar estado a "Liquidado" solo para la orden seleccionada
       if (ordenInput) {
         filas.forEach(fila => {
           const numOrden = fila.querySelector(".col-orden").innerText;
@@ -547,16 +533,14 @@ td.col-select input[type="checkbox"] {
             fila.style.display = "none";
           }
         });
-        document.getElementById("tituloPreliq").innerText = `Liquidación #014`;
+        document.getElementById("tituloPreliq").innerText = `Liquidación #${ordenInput}`;
       } else {
+        // Si no hay orden específica, actualizar todas
         document.querySelectorAll(".col-estado").forEach(el => el.innerText = "Liquidado");
         document.getElementById("tituloPreliq").innerText = "Liquidación General";
       }
       
       actualizarTotales();
-      
-      // Mostrar confirmación de liquidación
-      alert("Liquidación generada correctamente");
     }
   }
 

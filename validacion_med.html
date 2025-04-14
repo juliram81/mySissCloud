@@ -201,8 +201,8 @@
         <select id="numeroOrden">
           <option selected></option>
           <option>003</option>
+          <option>005</option>
           <option>007</option>
-          <option>011</option>
         </select>
       </div>
 
@@ -277,7 +277,7 @@
   <!-- Popup Justificación -->
   <div id="popupForm" class="popup hidden">
       <span id="closePopup" class="popup-close">×</span>
-    <h3>Formulario de Justificación</h3>
+    <h3>Formulario de Objeción</h3>
     <div id="formularioCampos"></div>
     <button class="btn" onclick="guardarFormulario()">Guardar</button>
   </div>
@@ -352,8 +352,8 @@ function mostrarTabla() {
     const fechaFin = document.getElementById("fechaFin").value;
     const numeroOrden = document.getElementById("numeroOrden").value;
 
-    if (!fechaInicio || !fechaFin || !numeroOrden) {
-      alert("Por favor selecciona ambas fechas y el número de orden.");
+    if (!numeroOrden) {
+      alert("Por favor selecciona el número de orden.");
       return;
     }
   document.getElementById("tablaPreliq").classList.remove("hidden");
@@ -416,7 +416,7 @@ function guardarDatos() {
         const icono = document.createElement("span");
         icono.className = "popup-icon";
         icono.innerHTML = "📩";
-        icono.setAttribute("data-respuesta", "Se confirma y se arregla según las observaciones");
+        icono.setAttribute("data-respuesta", "Se confirma y se corrije");
         icono.onclick = function () {
           verFormularioRespuesta(this);
         };
