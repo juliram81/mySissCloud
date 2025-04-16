@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloud Medical Fees mySiss</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: white;
+	  margin: 60px 30px 30px 30px; /* top, right, bottom, left */
+    }
+
+    .container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 180px;
+      background-color: #eee6f8;
+      padding: 20px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .sidebar h1 {
+      color: purple;
+      font-weight: bold;
+      font-size: 50px;
+      margin-bottom: 30px;
+    }
+
+    .sidebar a {
+      display: block;
+      margin: 20px 0;
+      color: purple;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .main {
+      margin-left: 240px;
+      flex: 1;
+      background-color: white;
+      padding: 20px 40px;
+    }
+	.tab-container {
+      width: fit-content;
+      border: 1px solid #ccc;
+	  margin-top: 40px; /* esto baja solo el contenedor */
+    }
+
+    .tab-buttons {
+      display: flex;
+    }
+
+    .tab-buttons button {
+      background-color: #eee;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      border-right: 1px solid #ccc;
+    }
+
+    .tab-buttons button:last-child {
+      border-right: none;
+    }
+
+    .tab-buttons button.active {
+      background-color: purple;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 10px;
+      border-top: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 4px 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: purple;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <h1>mySiss</h1>
+      <h3>Gestión de usuarios</h3>
+      <h4>Configuración</h4>
+
+      <a href="base.html">Base</a>
+      <a href="usuario.html">Usuario</a>
+      <a href="funcionalidades.html">Funcionalidades</a>
+	  <a href="roles.html">Roles</a>
+      <a href="login.html">Cerrar sesión</a>
+	 
+    </div>
+
+    <div class="main">
+
+	<div class="form-row">
+	  <label>Usuario:</label>
+	  <input type="text" id="user" />
+	</div>
+		
+<div class="tab-container">
+  <!-- Botones de pestañas -->
+  <div class="tab-buttons">
+    <button class="tab-button active" onclick="showTab('creacion_user')">Creación usuario</button>
+    <button class="tab-button" onclick="showTab('clave_acceso')">Clave acceso</button>
+	<button class="tab-button" onclick="showTab('periodo_val')">Periodo validez</button>
+  </div>
+
+<!-- CONTENEDOR 1: Creación usuario -->
+<div id="creacion_user" class="tab-content active">
+  <table>
+    <tr>
+      <td><label>Tipo documento:</label></td>
+      <td>
+        <select>
+          <option>CC</option>
+          <option>TI</option>
+          <option>CE</option>
+        </select>
+      </td>
+      <td><label>Número documento:</label></td>
+      <td><input type="text" /></td>
+    </tr>
+    <tr>
+      <td><label>Nombre:</label></td>
+      <td><input type="text" /></td>
+      <td><label>Correo:</label></td>
+      <td><input type="email" /></td>
+    </tr>
+    <tr>
+      <td><label>Usuario asignado:</label></td>
+      <td><input type="text" value="usuario123" readonly style="background-color: #eee;" /></td>
+      <td><label>Fecha creación:</label></td>
+      <td><input type="date" /></td>
+    </tr>
+  </table>
+</div>
+
+<!-- CONTENEDOR 2: Clave acceso -->
+<div id="clave_acceso" class="tab-content">
+  <table>
+    <tr>
+      <td><label>Usuario:</label></td>
+      <td><input type="text" value="usuario123" readonly style="background-color: #eee;" /></td>
+      <td><label>Clave actual:</label></td>
+      <td><input type="password" value="********" readonly style="background-color: #eee;" /></td>
+    </tr>
+    <tr>
+      <td><label>Clave nueva:</label></td>
+      <td colspan="2" style="position: relative;">
+        <input type="password" id="claveNueva" />
+        <span style="position: absolute; right: 10px; top: 8px; cursor: pointer;" 
+              onmousedown="mostrarClave()" onmouseup="ocultarClave()" onmouseleave="ocultarClave()">👁️</span>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- CONTENEDOR 3: Periodo validez -->
+<div id="periodo_val" class="tab-content">
+  <table>
+    <tr>
+      <td><label>Usuario:</label></td>
+      <td><input type="text" value="usuario123" readonly style="background-color: #eee;" /></td>
+      <td><label>Fecha inicio:</label></td>
+      <td><input type="date" /></td>
+    </tr>
+    <tr>
+      <td><label>Fecha fin:</label></td>
+      <td><input type="date" /></td>
+      <td><label>Estado:</label></td>
+      <td>
+        <select>
+          <option>Activo</option>
+          <option>Inactivo</option>
+        </select>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+<script>
+  function showTab(tabId) {
+    // Oculta todos los contenidos
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.remove('active');
+    });
+
+    // Quita el estilo activo de todos los botones
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    // Muestra el contenido seleccionado
+    document.getElementById(tabId).classList.add('active');
+
+    // Activa el botón correspondiente
+    const buttons = document.querySelectorAll('.tab-button');
+    if (tabId === 'documentos') {
+      buttons[0].classList.add('active');
+    } else {
+      buttons[1].classList.add('active');
+    }
+  }
+</script>
+</body>
+</html>

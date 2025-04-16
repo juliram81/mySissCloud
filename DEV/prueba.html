@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Usuarios - mySiss</title>
+  <style>
+    body {
+      margin: 60px 30px 30px 30px;
+      font-family: Arial, sans-serif;
+      background-color: white;
+    }
+
+    .container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 180px;
+      background-color: #eee6f8;
+      padding: 20px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .sidebar h1 {
+      color: purple;
+      font-weight: bold;
+      font-size: 50px;
+      margin-bottom: 30px;
+    }
+
+    .sidebar a {
+      display: block;
+      margin: 20px 0;
+      color: purple;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .main {
+      margin-left: 240px;
+      flex: 1;
+      padding: 20px 40px;
+    }
+
+    .tab-container {
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .tab-buttons button {
+      background-color: #eee;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      border-right: 1px solid #ccc;
+    }
+
+    .tab-buttons button.active {
+      background-color: purple;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      padding: 6px;
+      text-align: left;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 5px;
+    }
+
+    input[readonly] {
+      background-color: #eee;
+    }
+
+    .required-label::after {
+      content: " *";
+      color: red;
+    }
+
+    .form-row {
+      margin-bottom: 20px;
+    }
+
+    .form-row label {
+      font-weight: bold;
+    }
+
+    .password-toggle {
+      position: relative;
+    }
+
+    .password-toggle input {
+      width: 100%;
+      padding-right: 30px;
+    }
+
+    .password-toggle span {
+      position: absolute;
+      right: 10px;
+      top: 7px;
+      cursor: pointer;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-title span {
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <h1>mySiss</h1>
+      <h3>Gestión de usuarios</h3>
+      <h4>Configuración</h4>
+      <a href="#">Base</a>
+      <a href="#">Usuario</a>
+      <a href="#">Funcionalidades</a>
+      <a href="#">Roles</a>
+      <a href="#">Cerrar sesión</a>
+    </div>
+
+    <div class="main">
+      <div class="section-title">
+        <h2>Formulario de Usuario</h2>
+        <label for="usuarioAsignado">Usuario asignado <span style="color:red">*</span></label>
+        <input type="text" id="usuarioAsignado" value="usuario123" />
+      </div>
+
+      <div class="tab-container">
+        <div class="tab-buttons">
+          <button class="tab-button active" onclick="showTab('creacion_user', this)">Creación usuario</button>
+          <button class="tab-button" onclick="showTab('clave_acceso', this)">Clave acceso</button>
+          <button class="tab-button" onclick="showTab('periodo_val', this)">Periodo validez</button>
+        </div>
+
+        <!-- Pestaña 1 -->
+        <div id="creacion_user" class="tab-content active">
+          <table>
+            <tr>
+              <td><label class="required-label">Tipo documento:</label></td>
+              <td>
+                <select>
+                  <option value="">Seleccione</option>
+                  <option value="CC">CC</option>
+                  <option value="TI">TI</option>
+                  <option value="CE">CE</option>
+                </select>
+              </td>
+              <td><label class="required-label">Número documento:</label></td>
+              <td><input type="text" /></td>
+            </tr>
+            <tr>
+              <td><label class="required-label">Nombre completo:</label></td>
+              <td><input type="text" /></td>
+              <td><label class="required-label">Correo:</label></td>
+              <td><input type="email" /></td>
+            </tr>
+            <tr>
+              <td><label>Teléfono:</label></td>
+              <td><input type="text" /></td>
+              <td><label>Extensión:</label></td>
+              <td><input type="text" /></td>
+            </tr>
+            <tr>
+              <td><label class="required-label">Rol asignado:</label></td>
+              <td>
+                <select>
+                  <option value="">Seleccione</option>
+                  <option>Administrador</option>
+                  <option>Usuario</option>
+                </select>
+              </td>
+              <td><label>Área:</label></td>
+              <td><input type="text" /></td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Pestaña 2 -->
+        <div id="clave_acceso" class="tab-content">
+          <table>
+            <tr>
+              <td><label class="required-label">Clave acceso nueva:</label></td>
+              <td class="password-toggle">
+                <input type="password" id="clave" />
+                <span onmousedown="mostrarClave(true)" onmouseup="mostrarClave(false)">👁️</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Pestaña 3 -->
+        <div id="periodo_val" class="tab-content">
+          <table>
+            <tr>
+              <td><label class="required-label">Fecha inicio:</label></td>
+              <td><input type="date" /></td>
+              <td><label class="required-label">Fecha fin:</label></td>
+              <td><input type="date" /></td>
+            </tr>
+            <tr>
+              <td><label>Motivo:</label></td>
+              <td colspan="3"><input type="text" /></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(tabId, button) {
+      const contents = document.querySelectorAll(".tab-content");
+      contents.forEach(tab => tab.classList.remove("active"));
+
+      const buttons = document.querySelectorAll(".tab-button");
+      buttons.forEach(btn => btn.classList.remove("active"));
+
+      document.getElementById(tabId).classList.add("active");
+      button.classList.add("active");
+    }
+
+    function mostrarClave(show) {
+      const claveInput = document.getElementById("clave");
+      claveInput.type = show ? "text" : "password";
+    }
+  </script>
+</body>
+</html>

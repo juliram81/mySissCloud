@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>mySiss - Honorarios Médicos</title>
+   <title>Cloud Medical Fees mySiss</title>
   <style>
     body {
       margin: 0;
@@ -162,6 +162,7 @@ td.col-select input[type="checkbox"] {
 	  <a href="honorarios.html" style="text-decoration: underline;">Preliquidación / Liquidación</a>
       <a href="validacion_liq.html">Validaciones</a>
       <a href="reportes_liq.html">Reportes</a>
+	  <a href="login.html">Cerrar sesion</a>
     </div>
  
  <div class="main">
@@ -174,8 +175,8 @@ td.col-select input[type="checkbox"] {
       <div id="preliquidacion-section" class="form-section">
         <div class="form-row">
           <label>Fecha:</label>
-          <input type="date" />
-          <input type="date" />
+		<input type="date" id="fechaInicio" />
+		<input type="date" id="fechaFin" />
         </div>
 
         <div class="form-row">
@@ -196,7 +197,7 @@ td.col-select input[type="checkbox"] {
             <select id="tipoContrato" onchange="mostrarEspecialidad(this.value)">
               <option selected disabled></option>
               <option value="grupo">Grupo Profesional</option>
-              <option value="servicio">Prestación de servicio</option>
+              <option value="servicio">A nombre propio</option>
               <option value="nomina">Nómina</option>
             </select>
           </div>
@@ -216,12 +217,12 @@ td.col-select input[type="checkbox"] {
 		
         <div class="form-row">		
           <label>Profesional:</label>
-          <select>
+          <select id="profesionalSelect">
             <option selected></option>
-              <option>Yeny Palacio</option>
-              <option>Anthony Trejos</option>
-              <option>Julian Ramirez</option>
-              <option>Gustavo Mondragon</option>
+              <option>Palacio Yeny </option>
+              <option>Trejos Anthony </option>
+              <option>Ramirez Julian</option>
+              <option>Mondragon Gustavo</option>
             </select>
           </div>
 
@@ -235,13 +236,13 @@ td.col-select input[type="checkbox"] {
       <div id="liquidacion-section" class="form-section hidden">
         <div class="form-row">
           <label>Fecha:</label>
-          <input type="date" />
-          <input type="date" />
+		<input type="date" id="fechaInicioLiq" />
+		<input type="date" id="fechaFinLiq" />
         </div>
 
         <div class="form-row">
           <label>Número Orden:</label>
-          <input type="text" />
+          <input type="text" id="ordenInput" />
         </div>
 
         <div class="form-row">
@@ -308,6 +309,59 @@ td.col-select input[type="checkbox"] {
               <td>$0</td>
               <td>$208.571</td>
             </tr>
+            <!-- Nueva orden 011 -->
+            <tr>
+              <td class="col-select"><input type="checkbox" /></td>
+              <td class="col-estado">Preliquidado</td>
+              <td class="col-orden">011</td>
+              <td>Yeny Palacio</td>
+              <td>50010</td>
+              <td>890203</td>
+              <td>Consulta especializada</td>
+              <td>2025-04-10</td>
+              <td>09:00 a.m.</td>
+              <td>SURA EPS</td>
+              <td>Cardiología</td>
+              <td>$220.000</td>
+              <td>$34.921</td>
+              <td>$0</td>
+              <td>$254.921</td>
+            </tr>
+            <tr>
+              <td class="col-select"><input type="checkbox" /></td>
+              <td class="col-estado">En seguimiento</td>
+              <td class="col-orden">011</td>
+              <td>Yeny Palacio</td>
+              <td>49905</td>
+              <td>890201</td>
+              <td>Consulta externa</td>
+              <td>2025-04-01</td>
+              <td>04:00 p.m.</td>
+              <td>Comfenalco</td>
+              <td>Medicina Interna</td>
+              <td>$150.000</td>
+              <td>$23.810</td>
+              <td>$0</td>
+              <td>$198.600</td>
+            </tr>
+            <tr>
+              <td class="col-select"><input type="checkbox" /></td>
+              <td class="col-estado">Preliquidado</td>
+              <td class="col-orden">011</td>
+              <td>Yeny Palacio</td>
+              <td>50011</td>
+              <td>890204</td>
+              <td>Procedimiento diagnóstico</td>
+              <td>2025-04-12</td>
+              <td>02:00 p.m.</td>
+              <td>SURA EPS</td>
+              <td>Cardiología</td>
+              <td>$350.000</td>
+              <td>$55.556</td>
+              <td>$0</td>
+              <td>$405.556</td>
+            </tr>
+
 
           </tbody>
           <tfoot>
@@ -342,6 +396,14 @@ td.col-select input[type="checkbox"] {
   }
 
   function mostrarTabla(tipo) {
+    const fechaInicio = tipo === 'pre' ? document.getElementById("fechaInicio").value : document.getElementById("fechaInicioLiq").value;
+    const fechaFin = tipo === 'pre' ? document.getElementById("fechaFin").value : document.getElementById("fechaFinLiq").value;
+
+    if (!fechaInicio || !fechaFin) {
+      alert("Por favor selecciona ambas fechas.");
+      return;
+    }
+    
     document.getElementById("tablaPreliq").classList.remove("hidden");
 
     const colEstado = document.querySelectorAll(".col-estado");
@@ -352,12 +414,55 @@ td.col-select input[type="checkbox"] {
       colEstado.forEach(el => el.style.display = "none");
       colOrden.forEach(el => el.style.display = "none");
       colSelect.forEach(el => el.style.display = "none");
-      document.getElementById("tituloPreliq").innerText = "Detalle de Preliquidación";
+      
+      // Filtrado por profesional en preliquidación
+      const profesionalSelect = document.getElementById("profesionalSelect");
+      const profesional = profesionalSelect.options[profesionalSelect.selectedIndex].text;
+      
+      const filas = document.querySelectorAll("#tabla-body tr");
+      filas.forEach(fila => {
+        const nombreProfesional = fila.cells[3].innerText;
+        
+        // Coincidencia flexible de nombres
+        const nombresCoinciden = 
+          profesional === "" || 
+          nombreProfesional === profesional || 
+          nombreProfesional.split(" ").reverse().join(" ") === profesional;
+        
+        if (nombresCoinciden) {
+          fila.style.display = "";
+        } else {
+          fila.style.display = "none";
+        }
+      });
+      
+      document.getElementById("tituloPreliq").innerText = profesional ? `Preliquidación para ${profesional}` : "Detalle de Preliquidación";
     } else {
       colEstado.forEach(el => el.style.display = "");
       colOrden.forEach(el => el.style.display = "");
       colSelect.forEach(el => el.style.display = "");
-      document.getElementById("tituloPreliq").innerText = "Preliquidación #007";
+      
+      // Filtrado por número de orden en liquidación
+      const ordenInput = document.getElementById("ordenInput").value;
+      const filas = document.querySelectorAll("#tabla-body tr");
+      
+      if (ordenInput) {
+        document.getElementById("tituloPreliq").innerText = `Preliquidación #${ordenInput}`;
+        
+        filas.forEach(fila => {
+          const numOrden = fila.querySelector(".col-orden").innerText;
+          if (numOrden === ordenInput) {
+            fila.style.display = "";
+          } else {
+            fila.style.display = "none";
+          }
+        });
+      } else {
+        document.getElementById("tituloPreliq").innerText = "Todas las Preliquidaciones";
+        filas.forEach(fila => {
+          fila.style.display = "";
+        });
+      }
     }
 
     actualizarTotales();
@@ -374,34 +479,119 @@ td.col-select input[type="checkbox"] {
       colEstado.forEach(el => el.style.display = "");
       colOrden.forEach(el => el.style.display = "");
       colSelect.forEach(el => el.style.display = "none");
-      document.querySelectorAll(".col-estado").forEach(el => el.innerText = "Preliquidado");
-      document.getElementById("tituloPreliq").innerText = "Preliquidación #007";
+      
+      // Filtrado por profesional al preliquidar
+      const profesionalSelect = document.getElementById("profesionalSelect");
+      const profesional = profesionalSelect.options[profesionalSelect.selectedIndex].text;
+      
+      const filas = document.querySelectorAll("#tabla-body tr");
+      filas.forEach(fila => {
+        const nombreProfesional = fila.cells[3].innerText;
+        
+        // Coincidencia flexible de nombres
+        const nombresCoinciden = 
+          profesional === "" || 
+          nombreProfesional === profesional || 
+          nombreProfesional.split(" ").reverse().join(" ") === profesional;
+        
+        if (nombresCoinciden) {
+          fila.style.display = "";
+          fila.cells[1].innerText = "Preliquidado";
+        } else {
+          fila.style.display = "none";
+        }
+      });
+      
+      document.getElementById("tituloPreliq").innerText = profesional ? `Preliquidación para ${profesional}` : "Preliquidación General";
       actualizarTotales();
 
-		// Mostrar popup y redirigir después de un momento
-		alert("Correo enviado al Doctor, para su aprobación");
-
-		setTimeout(() => {
-		  window.location.href = "email.html";
-		}, 2000); // espera 2000 milisegundos (2 segundos)
-
+      // Mostrar confirmación y redirigir
+      alert("Preliquidación generada correctamente");
+      setTimeout(() => {
+        window.location.href = "email.html";
+      }, 2000);
 
     } else {
+      // Verificar si es la orden 011 con estado "En seguimiento"
+      const ordenInput = document.getElementById("ordenInput").value;
+      const filas = document.querySelectorAll("#tabla-body tr");
+      let tienePendientes = false;
+      
+      if (ordenInput === "011") {
+        filas.forEach(fila => {
+          const numOrden = fila.querySelector(".col-orden").innerText;
+          const estado = fila.querySelector(".col-estado").innerText;
+          if (numOrden === "011" && estado === "En seguimiento") {
+            tienePendientes = true;
+          }
+        });
+      }
+      
+      if (tienePendientes) {
+        alert("Tiene posiciones pendientes, no se puede liquidar esta orden");
+        return;
+      }
+      
       colEstado.forEach(el => el.style.display = "");
       colOrden.forEach(el => el.style.display = "");
       colSelect.forEach(el => el.style.display = "none");
-      document.querySelectorAll(".col-estado").forEach(el => el.innerText = "Liquidado");
-      document.getElementById("tituloPreliq").innerText = "Liquidación #004";
+      
+      // Actualizar estado a "Liquidado"
+      if (ordenInput) {
+        filas.forEach(fila => {
+          const numOrden = fila.querySelector(".col-orden").innerText;
+          if (numOrden === ordenInput) {
+            fila.querySelector(".col-estado").innerText = "Liquidado";
+            fila.style.display = "";
+          } else {
+            fila.style.display = "none";
+          }
+        });
+        document.getElementById("tituloPreliq").innerText = `Liquidación #014`;
+      } else {
+        document.querySelectorAll(".col-estado").forEach(el => el.innerText = "Liquidado");
+        document.getElementById("tituloPreliq").innerText = "Liquidación General";
+      }
+      
       actualizarTotales();
+      
+      // Mostrar confirmación de liquidación
+      alert("Liquidación generada correctamente");
     }
   }
 
   function actualizarTotales() {
     const allHeaders = document.querySelectorAll("thead th");
     const visibles = Array.from(allHeaders).filter(th => th.offsetParent !== null).length;
+    
+    // Calcular totales basados en las filas visibles
+    let totalUnitario = 0;
+    let totalIva = 0;
+    let totalDescuentos = 0;
+    let totalGeneral = 0;
+    
+    const filasVisibles = document.querySelectorAll("#tabla-body tr:not([style*='display: none'])");
+    filasVisibles.forEach(fila => {
+      const unitario = parseFloat(fila.cells[11].innerText.replace(/\D/g, '')) || 0;
+      const iva = parseFloat(fila.cells[12].innerText.replace(/\D/g, '')) || 0;
+      const descuentos = parseFloat(fila.cells[13].innerText.replace(/\D/g, '')) || 0;
+      const total = parseFloat(fila.cells[14].innerText.replace(/\D/g, '')) || 0;
+      
+      totalUnitario += unitario;
+      totalIva += iva;
+      totalDescuentos += descuentos;
+      totalGeneral += total;
+    });
+    
+    // Formatear los números con separadores de miles
+    const formatNumber = num => new Intl.NumberFormat('es-CO').format(num);
+    
     const filaTotales = `
       <td colspan="${visibles - 4}"><strong>Totales</strong></td>
-      <td>$360.000</td><td>$57.142</td><td>$0</td><td>$417.142</td>
+      <td>$${formatNumber(totalUnitario)}</td>
+      <td>$${formatNumber(totalIva)}</td>
+      <td>$${formatNumber(totalDescuentos)}</td>
+      <td>$${formatNumber(totalGeneral)}</td>
     `;
     document.getElementById("tfoot-row").innerHTML = filaTotales;
   }

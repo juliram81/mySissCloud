@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloud Medical Fees mySiss</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: white;
+	  margin: 60px 30px 30px 30px; /* top, right, bottom, left */
+    }
+
+    .container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 180px;
+      background-color: #eee6f8;
+      padding: 20px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .sidebar h1 {
+      color: purple;
+      font-weight: bold;
+      font-size: 50px;
+      margin-bottom: 30px;
+    }
+
+    .sidebar a {
+      display: block;
+      margin: 20px 0;
+      color: purple;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .main {
+      margin-left: 240px;
+      flex: 1;
+      background-color: white;
+      padding: 20px 40px;
+    }
+	.tab-container {
+      width: fit-content;
+      border: 1px solid #ccc;
+	  margin-top: 40px; /* esto baja solo el contenedor */
+    }
+
+    .tab-buttons {
+      display: flex;
+    }
+
+    .tab-buttons button {
+      background-color: #eee;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      border-right: 1px solid #ccc;
+    }
+
+    .tab-buttons button:last-child {
+      border-right: none;
+    }
+
+    .tab-buttons button.active {
+      background-color: purple;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 10px;
+      border-top: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 4px 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: purple;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <h1>mySiss</h1>
+      <h3>Gestión de usuarios</h3>
+      <h4>Configuración</h4>
+
+      <a href="base.html">Base</a>
+      <a href="usuario.html">Usuario</a>
+      <a href="funcionalidades.html">Funcionalidades</a>
+	  <a href="roles.html">Roles</a>
+      <a href="login.html">Cerrar sesión</a>
+	 
+    </div>
+
+    <div class="main">
+
+
+<div class="tab-container">
+  <!-- Botones de pestañas -->
+  <div class="tab-buttons">
+    <button class="tab-button active" onclick="showTab('documentos')">Tipo Documentos</button>
+    <button class="tab-button" onclick="showTab('motivos')">Motivos</button>
+  </div>
+
+  <!-- Contenido de Tipo Documentos -->
+  <div id="documentos" class="tab-content active">
+    <table>
+      <thead>
+        <tr>
+          <th>Consecutivo</th>
+          <th>Tipo Documentos</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>C.C</td><td>Cédula de ciudadanía</td></tr>
+        <tr><td>2</td><td>C.E</td><td>Cédula extranjería</td></tr>
+        <tr><td>3</td><td>NIT</td><td>Número identificación tributaria</td></tr>
+        <tr><td>4</td><td>T.I</td><td>Tarjeta identidad</td></tr>
+        <tr><td>5</td><td>PP</td><td>Pasaporte</td></tr>
+        <tr><td>6</td><td>R.C</td><td>Registro civil</td></tr>
+        <tr><td>7</td><td>D.E</td><td>Documento identificación extranjería</td></tr>
+        <tr><td>8</td><td>C.D</td><td>Carnet diplomado</td></tr>
+        <tr><td>9</td><td>T.E</td><td>Tarjeta extranjería</td></tr>
+        <tr><td>10</td><td>N.E</td><td>NIT extranjería</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Contenido de Motivos -->
+  <div id="motivos" class="tab-content">
+    <table>
+      <thead>
+        <tr>
+          <th>Consecutivo</th>
+          <th>Motivos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Retiro</td></tr>
+        <tr><td>2</td><td>Vacaciones</td></tr>
+        <tr><td>3</td><td>Licencia</td></tr>
+        <tr><td>4</td><td>Incapacidad</td></tr>
+        <tr><td>5</td><td>Tiempo labor</td></tr>
+        <tr><td>6</td><td>Otros</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function showTab(tabId) {
+    // Oculta todos los contenidos
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.remove('active');
+    });
+
+    // Quita el estilo activo de todos los botones
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    // Muestra el contenido seleccionado
+    document.getElementById(tabId).classList.add('active');
+
+    // Activa el botón correspondiente
+    const buttons = document.querySelectorAll('.tab-button');
+    if (tabId === 'documentos') {
+      buttons[0].classList.add('active');
+    } else {
+      buttons[1].classList.add('active');
+    }
+  }
+</script>
+</body>
+</html>
